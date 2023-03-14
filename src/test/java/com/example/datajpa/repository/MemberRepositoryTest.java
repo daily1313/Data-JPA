@@ -1,6 +1,5 @@
 package com.example.datajpa.repository;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import com.example.datajpa.entity.Member;
@@ -14,9 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @Transactional
 @Rollback(false)
-class MemberRepositoryTest {
+public class MemberRepositoryTest {
 
-    @Autowired MemberJpaRepository memberRepository;
+    @Autowired MemberRepository memberRepository;
 
     @Test
     public void testMember() {
@@ -69,7 +68,7 @@ class MemberRepositoryTest {
         memberRepository.save(m1);
         memberRepository.save(m2);
 
-        List<Member> result = memberRepository.findByUsernameAndAgeGreaterThen("AAA", 15);
+        List<Member> result = memberRepository.findByUsernameAndAgeGreaterThan("AAA", 15);
 
         assertThat(result.get(0).getUsername()).isEqualTo("AAA");
         assertThat(result.get(0).getAge()).isEqualTo(20);

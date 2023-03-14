@@ -12,6 +12,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     List<Member> findTop3HelloBy();
 
-//    @Query(name = "Member.findByUsername")
+    @Query(name = "Member.findByUsername")
     List<Member> findByUsername(@Param("username") String username);
 }
