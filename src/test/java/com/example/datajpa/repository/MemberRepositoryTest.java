@@ -5,7 +5,9 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import com.example.datajpa.dto.MemberDto;
 import com.example.datajpa.entity.Member;
 import com.example.datajpa.entity.Team;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -131,6 +133,52 @@ public class MemberRepositoryTest {
             System.out.println("dto = " + dto);
         }
     }
+
+    @Test
+    public void findByNames() {
+
+        Member m1 = new Member("AAA", 10);
+        Member m2 = new Member("BBB", 20);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+
+
+        List<Member> result = memberRepository.findByNames(Arrays.asList("AAA","BBB"));
+
+        for (Member member : result) {
+            System.out.println("member = " + member);
+        }
+
+    }
+
+    @Test
+    public void returnType() {
+
+        Member m1 = new Member("AAA", 10);
+        Member m2 = new Member("BBB", 20);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+
+        List<Member> result = memberRepository.findListByUsername("AAA");
+        System.out.println("result = " + result);
+
+        // List인 경우 결과가 없으면 0
+
+        Member result2 = memberRepository.findMemberByUsername("AAA");
+        System.out.println("result2 = " + result2);
+
+        // 단건 조회인 경우 결과가 없으면 null
+
+        Optional<Member> result3 = memberRepository.findOptionalByUsername("AAA");
+        System.out.println("result3 = " + result3);
+
+        // 결과가 없으면 Optional.empty
+    }
+
+
+
+
+
 
 
 
