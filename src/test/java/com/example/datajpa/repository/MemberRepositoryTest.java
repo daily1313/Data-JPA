@@ -11,6 +11,10 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -173,6 +177,48 @@ public class MemberRepositoryTest {
         System.out.println("result3 = " + result3);
 
         // 결과가 없으면 Optional.empty
+    }
+
+    @Test
+    public void paging() {
+        //given
+        memberRepository.save(new Member("member1", 10));
+        memberRepository.save(new Member("member2", 10));
+        memberRepository.save(new Member("member3", 10));
+        memberRepository.save(new Member("member4", 10));
+        memberRepository.save(new Member("member5", 10));
+
+        // page 1 offset = 0, limit = 10, page2 -> offset10
+
+        int age = 10;
+        // 0페이지부터 3개, 사용자명을 기준으로 내림차순 정렬
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Direction.DESC, "username"));
+
+        //when
+        Page<Member> page  = memberRepository.findByAge(10, pageRequest);
+
+        page.map(m -> new MemberDto(m.getId(), m.getUsername(), null));
+        // 페이지 계산 공식 적용
+        // totalPage = totalCount / Size
+        // 마지막 페이지...
+        // 최초 페이지...
+
+        //Then
+        List<Member> content = page.getContent();
+        long totalElements = page.getTotalElements();
+        for (Member member : content) {
+            System.out.println("member = " + member);
+        }
+        System.out.println("totalElements = " + totalElements);
+
+        assertThat(content.size()).isEqualTo(3);
+        assertThat(page.getTotalElements()).isEqualTo(5);
+        assertThat(page.getNumber()).isEqualTo(0);
+        assertThat(page.getTotalPages()).isEqualTo(2);
+        assertThat(page.isFirst()).isTrue();
+        assertThat(page.hasNext()).isTrue();
+
+
     }
 
 
